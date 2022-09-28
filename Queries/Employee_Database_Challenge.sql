@@ -51,3 +51,59 @@ LEFT JOIN titles AS tls
 WHERE d_emp.to_date = '9999-01-01'
     AND (emp.birth_date  BETWEEN '1965-01-01' AND '1965-12-31')
 ORDER BY emp.emp_no ASC;
+
+-- Select retiring employees grouped by birth year
+SELECT
+	COUNT (EXTRACT (year FROM employees.birth_date)),
+	EXTRACT (year FROM employees.birth_date)
+FROM employees
+LEFT JOIN dept_emp ON (employees.emp_no = dept_emp.emp_no)
+WHERE (employees.birth_date BETWEEN '1952-01-01' AND '1955-12-31')
+	AND dept_emp.to_date = '9999-01-01'
+GROUP BY EXTRACT (year FROM employees.birth_date)
+ORDER BY EXTRACT (year FROM employees.birth_date);
+
+-- Select retiring employees grouped by birth year and department
+SELECT
+	COUNT (EXTRACT (year FROM employees.birth_date)),
+	dept_emp.dept_no,
+	departments.dept_name,
+	EXTRACT (year FROM employees.birth_date)
+FROM employees
+LEFT JOIN dept_emp ON (employees.emp_no = dept_emp.emp_no)
+LEFT JOIN departments ON (dept_emp.dept_no = departments.dept_no)
+WHERE (employees.birth_date BETWEEN '1952-01-01' AND '1955-12-31')
+	AND dept_emp.to_date = '9999-01-01'
+GROUP BY EXTRACT (year FROM employees.birth_date), dept_emp.dept_no, departments.dept_name;
+
+-- Select number of employees not retiring per department
+SELECT
+	COUNT (EXTRACT (year FROM employees.birth_date)),
+	departments.dept_name
+FROM employees
+LEFT JOIN dept_emp ON (employees.emp_no = dept_emp.emp_no)
+LEFT JOIN departments ON (dept_emp.dept_no = departments.dept_no)
+WHERE (employees.birth_date BETWEEN '1956-01-01' AND '2022-12-31')
+	AND dept_emp.to_date = '9999-01-01'
+GROUP BY departments.dept_name;
+
+-- Select number of employees retiring per department
+SELECT
+	COUNT (EXTRACT (year FROM employees.birth_date)),
+	departments.dept_name
+FROM employees
+LEFT JOIN dept_emp ON (employees.emp_no = dept_emp.emp_no)
+LEFT JOIN departments ON (dept_emp.dept_no = departments.dept_no)
+WHERE (employees.birth_date BETWEEN '1952-01-01' AND '1955-12-31')
+	AND dept_emp.to_date = '9999-01-01'
+GROUP BY departments.dept_name;
+
+-- Line graph showing employees by birth year
+SELECT
+	COUNT (EXTRACT (year FROM employees.birth_date)),
+	EXTRACT (year FROM employees.birth_date)
+FROM employees
+LEFT JOIN dept_emp ON (employees.emp_no = dept_emp.emp_no)
+WHERE dept_emp.to_date = '9999-01-01'
+GROUP BY EXTRACT (year FROM employees.birth_date)
+ORDER BY EXTRACT (year FROM employees.birth_date);
